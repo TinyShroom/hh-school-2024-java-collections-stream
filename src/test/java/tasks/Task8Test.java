@@ -4,17 +4,19 @@ import common.Person;
 import common.PersonService;
 import common.PersonWithResumes;
 import common.Resume;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.time.Instant;
 import java.util.List;
 import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.eq;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import static org.mockito.Mockito.lenient;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class Task8Test {
@@ -45,12 +47,12 @@ public class Task8Test {
     ));
 
     assertEquals(
-        personWithResumes,
         Set.of(
             new PersonWithResumes(person1, Set.of(resume1, resume2)),
             new PersonWithResumes(person2, Set.of(resume3, resume4)),
             new PersonWithResumes(person3, Set.of())
-        )
+        ),
+        personWithResumes
     );
 
   }
