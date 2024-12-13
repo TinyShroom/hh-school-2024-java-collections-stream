@@ -26,12 +26,11 @@ public class Task9 {
   // Конвертируем начиная со второй
   public List<String> getNames(List<Person> persons) {
     // Лаконичнее
-    // Но если "фальшивая персона" выдаётся даже когда других персон нет, т.е. список не может быть пустым,
-    // то проверку можно убрать
-    if (persons.isEmpty()) {
-      return Collections.emptyList();
-    }
     // можно использовать skip()
+    // не упадёт с пустым списком
+    // не упадёт с неизменяемым списком
+    // не изменяется исходный список
+    // удаление первого элемента может иметь временную сложность O(n)
     return persons.stream()
         .skip(1)
         .map(Person::firstName)
@@ -62,16 +61,19 @@ public class Task9 {
   // есть ли совпадающие в двух коллекциях персоны?
   // Достаточно найти первое совпадение
   public boolean hasSamePersons(Collection<Person> persons1, Collection<Person> persons2) {
-    Set<Person> differentPersons = new HashSet<>(persons1);
-    for (var person: persons2) {
-      if (differentPersons.contains(person)) return true;
-    }
-    return false;
+    Set<Person> person1Set = new HashSet<>(persons1);
+    return persons2.stream()
+        .anyMatch(person1Set::contains);
   }
 
   // Посчитать число четных чисел
   // Можно без создания дополнительной переменной
-  // Непонятно для чего нужна переменная класса. Если она нужна, то перед return можно ей присвоить значение
+  // Переменные следует создавать с наименьшей областью видимости
+  // Так их проще отслеживать
+  // Они будут недоступны из других частей программы: их никто не изменит извне и изменение их в методе не окажет влияния на поведение других частей программы
+
+  // Странно, что метод принимает Stream. На лекции упоминалось, что так делать нельзя, т.к. стрим одноразовый
+  // Возможно, было бы лучше, если бы метод принимал коллекцию, но не решился менять сигнатуру метода
   public long countEven(Stream<Integer> numbers) {
     return numbers.filter(num -> num % 2 == 0).count();
   }
@@ -81,7 +83,7 @@ public class Task9 {
   // Т.к. хранимые числа по значению не превышают capacity, их хеш равен их значению.
   // Поэтому они выводятся в порядке возрастания
   // Если, например, добавить в пустой HashSet числа 0, 1, 2, 3, 16, 32, то порядок будет [0, 16, 32, 1, 2, 3],
-  // т.к. хеш 0, 16, 32 будет совпадать, возникнет коллизия и храниться они будут в одном bucket в виде связного списка
+  // т.к. остаток от деления хеша на capacity для 0, 16, 32 будет совпадать, возникнет коллизия и храниться они будут в одном bucket в виде связного списка
   void listVsSet() {
     List<Integer> integers = IntStream.rangeClosed(1, 10000).boxed().collect(Collectors.toList());
     List<Integer> snapshot = new ArrayList<>(integers);
